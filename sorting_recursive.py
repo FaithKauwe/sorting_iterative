@@ -146,17 +146,44 @@ def partition(items, low, high):
 def quick_sort(items, low=None, high=None):
     """Sort given items in place by partitioning items in range `[low...high]`
     around a pivot item and recursively sorting each remaining sublist range.
-    TODO: Best case running time: ??? Why and under what conditions?
-    TODO: Worst case running time: ??? Why and under what conditions?
-    TODO: Memory usage: ??? Why and under what conditions?"""
+    Best case time complexity: O(n log n).  - when pivot lands in the middle each time.
+    if pivot splits the list in half, we only need log(n) levels of recursion. 
+
+    Worst case time complexity: O(n^2). when pivot is always the smallest or largest element.
+    We get n levels of recursion instead of log(n), each doing O(n) work. So: n x O(n) = O(n²).
+
+    Space Complexity: o(n) even though only a few variables are used, the recursive calls have
+    to be traced through a call stack of frames which uses memory. the number of recursive calls will be determined
+    by the size of the array."""
    
     # based on the TDs, I'll need to check if high and low have deault values, I think I can do tha with a
-    # if high and if low conditional- that should check to see if any vale exists, otherwise if they are nil, 
+    # if high and if low conditional- that should check to see if any value exists, otherwise if they are nil, 
     # I assign them these values low =0 (the first index in the list) high = list[-1] (the last index in the list)
     # then I check if the list is the base case, where the len(list) is <= 1
     # then I call the helper, partition, giving it the values of low and high, and the list
     # i get pivot_index back from partition, now recurse on the left side: quick_sort(items, low, pivot_index - 1)
     # recurse on right side: quick_sort(items, pivot_index + 1, high)
-    # then I recursively call quick_sort until the base case is reached and then I build back up 
-    # from there
-    pass
+    # then I recursively call quick_sort until the base case is reached 
+    # no building back up, partition sorts in place using the tuple unpacking to swap items directly in the list
+
+    if high is None:
+        high = len(items) - 1
+    if low is None:
+        low = 0
+
+    # base case: return if range is 0 or 1, the list is at its smallest piece
+    if low >= high:
+        return
+    
+    # call partition to rearrange items and get pivot's final position
+    pivot_index = partition(items, low, high)
+    
+    # recursively call quick_sort on the left and right sides of the pivot
+    # each call will check values of high/low, check base case, call partition to get new pivot_index
+    # and keep going until the base case is reached
+    # at some point the first quicksort (small zone) will hit the base case and be sorted, report back as 
+    # a return, but this just ends the function call for *that* quick_sort call, it doesn't exit
+    # the parent function and the second quick_sort (large zone) will still keep executing until it
+    # reaches its base case too 
+    quick_sort(items, low, pivot_index - 1)
+    quick_sort(items, pivot_index + 1, high)
