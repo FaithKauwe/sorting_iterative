@@ -1,5 +1,5 @@
 #!python
-
+from sorting_iterative import selection_sort
 
 def merge(items1, items2):
     """Merge given lists of items, each assumed to already be in sorted order,
@@ -37,6 +37,31 @@ def merge(items1, items2):
     results.extend(items2[pointer2:])
     return results
     
+def split_sort_merge(items):
+    """Sort given items by splitting list into two approximately equal halves,
+    sorting each with an iterative sorting algorithm, and merging results into
+    a list in sorted order.
+    Time Complexity: O(n^2), from calling selection_sort, the sort merge has no loops and doesn't
+    iterate over every element. 
+    Space Complexity: O(n), the size of the list is variable and that determines 
+    the size of the two new data structures, also calls selection_sort, which is O(1)"""
+    
+    # list with 0 or 1 items is already sorted - return the list
+    if len(items) <= 1:
+        return
+    
+    # SPLIT: find midpoint and create two halves using splicing
+    mid = len(items) // 2
+    left_half = items[:mid]
+    right_half = items[mid:]
+    
+    # call selection_sort on both halves
+    selection_sort(left_half)
+    selection_sort(right_half)
+
+    # merge the two sorted halves into one list, mutate the list in place using items[:]= syntax
+    # don't need to return anything because the list is mutated in place
+    items[:] = merge(left_half, right_half)
     
 
 def merge_sort(items):
@@ -75,17 +100,48 @@ def merge_sort(items):
 
 def partition(items, low, high):
     """Return index `p` after in-place partitioning given items in range
-    `[low...high]` by choosing a pivot (TODO: document your method here) from
-    that range, moving pivot into index `p`, items less than pivot into range
+    `[low...high]` . pivot will start the high index, the last item in the list. partition doesn't
+    have to assign high or low, quick_sort will assign high + low before partition is called. 
+    partition will create a mutated list with everything smaller than p to it's left and everything
+    greater than p to it's right. then partition returns the index of the pivot point.
     `[low...p-1]`, and items greater than pivot into range `[p+1...high]`.
-    TODO: Running time: ??? Why and under what conditions?
-    TODO: Memory usage: ??? Why and under what conditions?"""
-    # TODO: Choose a pivot any way and document your method in docstring above
-    # TODO: Loop through all items in range [low...high]
-    # TODO: Move items less than pivot into front of range [low...p-1]
-    # TODO: Move items greater than pivot into back of range [p+1...high]
-    # TODO: Move pivot item into final position [p] and return index p
-
+    Time Complexity: O(n), the loop runs n times, determined by the range
+    Space Complexity: O(1), just 3 variables, i, j, and pivot, which is constand space """
+    # choose the pivot point as the last element, assign that using indexing -1
+    # then split the list into two partitions, using the list range, since I'm using the last 
+    # element as the pivot, there will only be one partition, which will be :pivot_index or whatever
+    # the correct syntax is. then loop through everything in that partition and move everything
+    # smaller that the element at pivot_index to the left of pivot_index and everything greater than the element 
+    # at pivot_index to the right of pivot_index.
+    # then return the index of the pivot_index.
+    
+    # this is the value of the element at the high index, which everything else will be compared to
+    pivot = items[high]
+    
+    # i is the index that tracks the boundary of the "small items zone"
+    # everything at index <= i is smaller than pivot
+    # start at low - 1 because the zone is empty at first
+    i = low - 1
+    
+    # loop through all items from low to high-1 (not including pivot itself)
+    # j is the index that tracks the current item being compared to the pivot
+    for j in range(low, high):
+        # if current item is smaller than pivot, it belongs in the small zone
+        if items[j] < pivot:
+            i += 1  # expand the small zone
+            # swap current item into the small zone using tuple unpacking
+            items[i], items[j] = items[j], items[i]
+    
+    # now put pivot in its correct position (right after the small zone)
+    # when the loop that used j finishes (gets to the end of its range), the index i has now
+    # changed. everytime an item was found to be smaller than pivot, it got move to the left and 
+    # i's index value increased by 1. so now, when the loop has finished, i, representing the boundary of the small zone, 
+    # can be used as a marker to find the actual pivot in the list, bc it will be i plus 1
+    items[i + 1], items[high] = items[high], items[i + 1]
+    
+    # return the pivot's final index
+    return i + 1
+    
 
 def quick_sort(items, low=None, high=None):
     """Sort given items in place by partitioning items in range `[low...high]`
@@ -93,7 +149,14 @@ def quick_sort(items, low=None, high=None):
     TODO: Best case running time: ??? Why and under what conditions?
     TODO: Worst case running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
-    # TODO: Check if high and low range bounds have default values (not given)
-    # TODO: Check if list or range is so small it's already sorted (base case)
-    # TODO: Partition items in-place around a pivot and get index of pivot
-    # TODO: Sort each sublist range by recursively calling quick sort
+   
+    # based on the TDs, I'll need to check if high and low have deault values, I think I can do tha with a
+    # if high and if low conditional- that should check to see if any vale exists, otherwise if they are nil, 
+    # I assign them these values low =0 (the first index in the list) high = list[-1] (the last index in the list)
+    # then I check if the list is the base case, where the len(list) is <= 1
+    # then I call the helper, partition, giving it the values of low and high, and the list
+    # i get pivot_index back from partition, now recurse on the left side: quick_sort(items, low, pivot_index - 1)
+    # recurse on right side: quick_sort(items, pivot_index + 1, high)
+    # then I recursively call quick_sort until the base case is reached and then I build back up 
+    # from there
+    pass
