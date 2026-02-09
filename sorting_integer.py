@@ -1,5 +1,5 @@
 #!python
-
+from sorting_iterative import insertion_sort
 
 def counting_sort(numbers):
     """Sort given numbers (integers) by counting occurrences of each number,
@@ -44,9 +44,50 @@ def bucket_sort(numbers, num_buckets=10):
     then sorting each bucket and concatenating all buckets in sorted order.
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
-    # TODO: Find range of given numbers (minimum and maximum values)
-    # TODO: Create list of buckets to store numbers in subranges of input range
-    # TODO: Loop over given numbers and place each item in appropriate bucket
+    
     # TODO: Sort each bucket using any sorting algorithm (recursive or another)
     # TODO: Loop over buckets and append each bucket's numbers into output list
     # FIXME: Improve this to mutate input instead of creating new output list
+
+        # how to find the min and max values, set two starter variables, min and max
+# then traverse the list and compare each number to both. if smaller then min or larger than max, replace with 
+# current number
+    if len(numbers) <= 1:
+        return
+    min_value = numbers[0]
+    max_value = numbers[0]
+    for num in numbers:
+        if num < min_value:
+            min_value = num
+        if num > max_value:
+            max_value = num
+
+# use min and max to find the range of the values in the input list
+    range_of_values = max_value - min_value + 1
+# create list of empty lists ("buckets")
+    buckets = [[] for _ in range(num_buckets)]
+# set bucket sixe, it's okay if it doesn't equate to a whole number, it will get converted 
+# to an int at the which_buckt_to_assign step
+    bucket_size = range_of_values / num_buckets
+# loop through and determine which bucket to place each num in. the core of this approach is
+# determining how far from the start num and then how many "bucket widths" away. it uses the determined
+# range to create even bucket widths that are relational to the numbers and the range
+    for num in numbers:
+        which_bucket_to_place_num = int((num - min_value) / bucket_size)
+# in the the case where the num is exactly max_value which could give a buckets[index] that is out of range
+# handle by "clamping" (forcing a value to stay within a certain range)     
+        if which_bucket_to_place_num == num_buckets:
+            which_bucket_to_place_num = num_buckets - 1
+        buckets[which_bucket_to_place_num].append(num)
+    
+    output_list = []
+    for bucket in buckets:
+        insertion_sort(bucket) # insertion mutates in place and does not return a sorted list, cannot be chained to the extend
+        output_list.extend(bucket)
+    numbers[:] = output_list
+    
+
+
+# inputs list : [35, 12, 87, 23, 35, 42, 15]
+# step through: min = 12, max = 87, range = 76, bicket_size = 7.6. first num in nums = 35, 
+# (35-12)/7.6 >> 23/7.6 >> 3.02 >> bucket at index 3

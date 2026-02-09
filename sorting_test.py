@@ -97,3 +97,98 @@ def test_sort_on_seven_dwarf_names():
     sorted_items = sorted(items)  # Copy
     sort(items)  # Mutate
     assert items == sorted_items
+
+
+# ---- Tests for counting_sort and bucket_sort ----
+
+from sorting_integer import counting_sort, bucket_sort
+
+
+def test_counting_sort_empty_list():
+    items = []
+    counting_sort(items)
+    assert items == []
+
+
+def test_counting_sort_single_element():
+    items = [42]
+    counting_sort(items)
+    assert items == [42]
+
+
+def test_counting_sort_already_sorted():
+    items = [1, 2, 3, 4, 5]
+    counting_sort(items)
+    assert items == [1, 2, 3, 4, 5]
+
+
+def test_counting_sort_reverse_order():
+    items = [5, 4, 3, 2, 1]
+    counting_sort(items)
+    assert items == [1, 2, 3, 4, 5]
+
+
+def test_counting_sort_with_duplicates():
+    items = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
+    counting_sort(items)
+    assert items == [1, 1, 2, 3, 3, 4, 5, 5, 6, 9]
+
+
+def test_counting_sort_all_same():
+    items = [7, 7, 7, 7]
+    counting_sort(items)
+    assert items == [7, 7, 7, 7]
+
+
+def test_counting_sort_with_large_range():
+    items = [100, 1, 50, 25, 75]
+    counting_sort(items)
+    assert items == [1, 25, 50, 75, 100]
+
+
+def test_bucket_sort_empty_list():
+    items = []
+    bucket_sort(items)
+    assert items == []
+
+
+def test_bucket_sort_single_element():
+    items = [42]
+    bucket_sort(items)
+    assert items == [42]
+
+
+def test_bucket_sort_already_sorted():
+    items = [1, 2, 3, 4, 5]
+    bucket_sort(items)
+    assert items == [1, 2, 3, 4, 5]
+
+
+def test_bucket_sort_reverse_order():
+    items = [5, 4, 3, 2, 1]
+    bucket_sort(items)
+    assert items == [1, 2, 3, 4, 5]
+
+
+def test_bucket_sort_with_duplicates():
+    items = [35, 12, 87, 23, 35, 42, 15]
+    bucket_sort(items)
+    assert items == [12, 15, 23, 35, 35, 42, 87]
+
+
+def test_bucket_sort_all_same():
+    items = [7, 7, 7, 7]
+    bucket_sort(items)
+    assert items == [7, 7, 7, 7]
+
+
+def test_bucket_sort_two_elements():
+    items = [9, 3]
+    bucket_sort(items)
+    assert items == [3, 9]
+
+
+def test_bucket_sort_with_random_integers():
+    items = [64, 25, 12, 22, 11, 90, 45, 37, 58, 72]
+    bucket_sort(items)
+    assert items == [11, 12, 22, 25, 37, 45, 58, 64, 72, 90]
