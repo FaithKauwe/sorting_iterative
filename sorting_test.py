@@ -99,8 +99,8 @@ def test_sort_on_seven_dwarf_names():
     assert items == sorted_items
 
 
-# ---- Tests for counting_sort and bucket_sort ----
-
+# tests for counting_sort and bucket_sort, the provided tests don't work for integers
+# to run tests: python3 -m pytest sorting_test.py -v
 from sorting_integer import counting_sort, bucket_sort
 
 

@@ -42,14 +42,13 @@ def counting_sort(numbers):
 def bucket_sort(numbers, num_buckets=10):
     """Sort given numbers by distributing into buckets representing subranges,
     then sorting each bucket and concatenating all buckets in sorted order.
-    TODO: Running time: ??? Why and under what conditions?
-    TODO: Memory usage: ??? Why and under what conditions?"""
-    
-    # TODO: Sort each bucket using any sorting algorithm (recursive or another)
-    # TODO: Loop over buckets and append each bucket's numbers into output list
-    # FIXME: Improve this to mutate input instead of creating new output list
+    Time Complexity:O(n + k) average case (when numbers are spread evenly across buckets), 
+    O(n²) worst case (when all numbers end up in one bucket and insertion_sort's nested loop has to run)
+    Space Complexity: O(n + k) — the n items (from the input array) stored across the buckets/output, 
+    plus the k bucket containers. k doesn't scale with n and tho it's hardcoded to 10 in this function, it's a param meaning
+    it could be any number and k could end up being huge and dominating the space efficency"""
 
-        # how to find the min and max values, set two starter variables, min and max
+# how to find the min and max values, set two starter variables, min and max
 # then traverse the list and compare each number to both. if smaller then min or larger than max, replace with 
 # current number
     if len(numbers) <= 1:
